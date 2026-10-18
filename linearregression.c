@@ -63,13 +63,14 @@ void update(void) {
 int main(){
 
     // int n,m;
+    srand((unsigned int)time(NULL));
     printf("Enter the number of datapoints and number of features\n");
     scanf("%d %d",&n,&m);
 
 
     for(int i = 0 ; i < n ; i ++){
         for(int j = 0; j < m; j++){
-            scanf("%d",&arr[i][j]);
+            scanf("%lf",&arr[i][j]);
         }   
     }
 
@@ -85,10 +86,11 @@ int main(){
     }
 
 
-    for(int p = 0 ; p < 10; p++) {
+    for(int p = 0 ; p < EPOCHS; p++) {
 
 
     for(int i = 0; i < n; i++){
+        double loss = 0.0;
         double pred = 0.0;
         for(int j = 0 ; j < m - 1; j++){
 
@@ -98,12 +100,23 @@ int main(){
         pred+=b;
         
         errors[i] = (pred - arr[i][m-1]);
+        loss += errors[i] * errors[i]; 
 
     }
 
     update();
+ if (p % 100 == 0 || p == EPOCHS - 1) {
+        printf("epoch %4d  MSE = %f\n", p, loss / n);
+    }
+    
 }
 
+
+printf("\nTrained parameters:\n");
+for (int j = 0; j < m - 1; j++) {
+    printf("w[%d] = %f\n", j, weights[j]);
+}
+printf("b    = %f\n", b);
     return 0;
 
 }
