@@ -1,17 +1,27 @@
+#define _USE_MATH_DEFINES
 #include  <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
 
 
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 int n;
 int m;
 
-double dat[1000][10];
-double weights[10];
+#define MAX_N 1000
+#define MAX_M 10
+#define EPOCHS 1000
+
+double arr[MAX_N][MAX_M];
+double weights[MAX_M];
+double errors[MAX_N];
 double a = 0.1;
 double b = 0.9;
-double errors[1000];
+//double errors[1000];
 double gaussian_random(double mean, double stddev) {
 
     double u1, u2;
@@ -34,13 +44,21 @@ double gaussian_random(double mean, double stddev) {
 
 }
 
-void update(int arr[]){
+void update(void) {
+    double grad_w[MAX_M] = {0};
+    double grad_b = 0.0;
 
-    for(int i = 0; i < n; i++){
-    for(int j = 0; j < m-1; j++){
-        weights[j] = weights[j] - a*((2.0/n)*(arr[i])*dat[i][j]);
-    }}
-    b = b - a*((2.0/n)*(arr[i])*arr[i][t]);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m - 1; j++) {
+            grad_w[j] += (2.0 / n) * errors[i] * arr[i][j];
+        }
+        grad_b += (2.0 / n) * errors[i];
+    }
+
+    for (int j = 0; j < m - 1; j++) {
+        weights[j] -= a * grad_w[j];
+    }
+    b -= a * grad_b;
 }
 int main(){
 
@@ -72,18 +90,18 @@ int main(){
 
     for(int i = 0; i < n; i++){
         double pred = 0.0;
-        for(int j = 0 ; j < m ; j++){
+        for(int j = 0 ; j < m - 1; j++){
 
-                 pred += arr[i][j]+weights[j];
+                 pred += arr[i][j]*weights[j];
 
         }
         pred+=b;
         
-        errors[i] = (pred - data[i][m]);
+        errors[i] = (pred - arr[i][m-1]);
 
     }
 
-    update(errors);
+    update();
 }
 
     return 0;
