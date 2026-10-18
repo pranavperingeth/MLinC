@@ -88,9 +88,9 @@ int main(){
 
     for(int p = 0 ; p < EPOCHS; p++) {
 
-
-    for(int i = 0; i < n; i++){
         double loss = 0.0;
+    for(int i = 0; i < n; i++){
+        
         double pred = 0.0;
         for(int j = 0 ; j < m - 1; j++){
 
@@ -108,7 +108,7 @@ int main(){
  if (p % 100 == 0 || p == EPOCHS - 1) {
         printf("epoch %4d  MSE = %f\n", p, loss / n);
     }
-    
+
 }
 
 
